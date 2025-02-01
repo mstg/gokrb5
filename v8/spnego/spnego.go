@@ -143,9 +143,11 @@ func (s *SPNEGOToken) Unmarshal(b []byte) error {
 		if err != nil {
 			return fmt.Errorf("not a valid SPNEGO token: %v", err)
 		}
-		// Check the OID is the SPNEGO OID value
+		// Check the OID is the SPNEGO OID value (or KRB5 or LegacyKRB5)
 		SPNEGOOID := gssapi.OIDSPNEGO.OID()
-		if !oid.Equal(SPNEGOOID) {
+		krb5OID := gssapi.OIDKRB5.OID()
+		legacyKRB5OID := gssapi.OIDMSLegacyKRB5.OID()
+		if !oid.Equal(SPNEGOOID) && !oid.Equal(krb5OID) && !oid.Equal(legacyKRB5OID) {
 			return fmt.Errorf("OID %s does not match SPNEGO OID %s", oid.String(), SPNEGOOID.String())
 		}
 	} else {
